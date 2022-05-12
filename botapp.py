@@ -6,7 +6,15 @@ import psycopg2
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/postgres'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
+
+
+def chain_messages(start , *fun):
+    res = start
+    for fun in funs:
+        res = fun(res)
+    return res
 
 @app.route("/")
 def hello():
@@ -16,6 +24,7 @@ def hello():
 def sms_reply():
     """Respond to incoming calls with a simple text message."""
     # Fetch the message
+    print(request)
     msg = request.form.get('Body')
     
     msg = msg.upper()
@@ -52,12 +61,15 @@ def sms_reply():
             db_conn.commit()
                # Create reply
             resp = MessagingResponse()
-            resp.message("🧐 I found these GPs near you")
-            resp.message(gp1)
-            resp.message(gp2)
-            resp.message(gp3)
-            resp.message("Which of these surgeries would you like to book an appointment with?")
-            return str(resp)
+            response = chain_messages(
+                resp.message("🧐 I found these GPs near you") ,
+                 resp.message(gp1) ,
+                  resp.message(gp2) ,
+                    resp.message(gp3) ,
+                      resp.message("Which of these surgeries would you like to book an appointment with?")
+            )
+
+            return str(response)
 
         except Exception as error:
             # Create reply
@@ -81,5 +93,6 @@ def sms_reply():
         resp.message("No problem- book through https://calendly.com/mydocemail306/15-minute-meeting")
         return str(resp)
 
-    if __name__ == "__main__":
-        app.run(debug=True)
+if __name__ == "__main__":
+    print('running')
+    app.run(debug=True)
