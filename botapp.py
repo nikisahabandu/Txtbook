@@ -18,7 +18,7 @@ def chain_messages(start , *fun):
 
 @app.route("/")
 def hello():
-    return "Hello, world!"
+    return "Hello, world!!!!"
 
 @app.route("/sms", methods=['POST'])  #dynamic routing
 def sms_reply():
