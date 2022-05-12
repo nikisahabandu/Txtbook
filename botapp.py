@@ -74,7 +74,7 @@ def sms_reply():
         except Exception as error:
             # Create reply
             resp = MessagingResponse()
-            #resp.message("Error: {}".format(error))
+            resp.message("Error: {}".format(error))
             resp.message("Sorry, I didn't understand. If you are looking for local GPs, please send us your postcode. FYI, we only work for London at the moment!")
 
             return str(resp)
